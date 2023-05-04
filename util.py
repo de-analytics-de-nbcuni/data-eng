@@ -6,7 +6,7 @@ import scipy.stats as stat
 from sqlalchemy.dialects import registry
 import pandas as pd
 import CONSTAINTS as c
-from NBCUDomoConnector import NBCUDomoConnector
+# from NBCUDomoConnector import NBCUDomoConnector
 import multiprocessing as mp
 import functools
 import logging
@@ -27,20 +27,45 @@ def now(status):
     est = pytz.timezone('US/Eastern')
     current_time = datetime.now(est).strftime("%-I:%M:%S %p %Z %x")
     print(status, current_time)
+    
+    
+def service_account_sql(query, column_names):
+    import sys
+    sys.path.append("/data02/code/")
+    import snowflake_sql
+    import pandas as pd
 
-def snowflake_engine():
+    conn = snowflake_sql.make_connection()
+
+    result = snowflake_sql.output_query(conn,query)
+
+    df = pd.DataFrame(result, columns = column_names)
+    
+    return df
+
+def snowflake_engine(user):
     registry.register('snowflake', 'snowflake.sqlalchemy', 'dialect')
     
-    engine = create_engine(
-        'snowflake://{user}:{password}@{account}/{database}/{schema}?warehouse={warehouse_name}'.format(
-            user='wrose',
-            password='Temporary2020!',
-            account='nbcd.us-east-1',
-            database='WALDO_PROD',
-            schema='mparticle',
-            warehouse_name='WH_DE_DEV'
-        )
-    )
+    snowflake = {'walter': ['wrose', 'Temporary2020!'], 'jinney': ['JGUO', 'Angela19062518!'],
+             'mike': ['mmorrissey', 'LEhCMb0!UD2P']}
+    
+    if user in ('walter', 'jinney', 'mike'):
+        engine = create_engine(
+            'snowflake://{user}:{password}@{account}/{database}/{schema}?warehouse={warehouse_name}'.format(
+                user=snowflake.get(user)[0],
+                password=snowflake.get(user)[1],
+                account='nbcd.us-east-1',
+                database='WALDO_PROD',
+                schema='mparticle',
+                warehouse_name='WH_DE_DEV'
+
+                )
+            )
+        
+    else:
+        print("Please input one of the user: 'walter' 'jinney' or 'mike'")
+       
+   
     return engine
 
 

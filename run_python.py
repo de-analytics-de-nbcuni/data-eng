@@ -1,9 +1,8 @@
-from util import *
-import sql_queries as sql
+import pandas as pd
 import CONSTAINTS as c
 import warnings
-# import datetime
-from datetime import date
+import datetime
+from datetime import date, timedelta
 from pylatex import Document, PageStyle, Head, MiniPage, Foot, LargeText, \
     MediumText, SmallText, LineBreak, simple_page_number, Section, \
     Subsection, TextBlock, HugeText, VerticalSpace, HorizontalSpace, \
@@ -24,7 +23,7 @@ pd.set_option('display.max_columns', None)
 
 warnings.filterwarnings("ignore")
 
-engine = snowflake_engine()
+# engine = snowflake_engine()
 
 # ! pip3 install texlive-pictures --user
 
@@ -90,26 +89,57 @@ def run_python_function(brand, df, df_rolling_raw, df_video):
 
 
     # Create Date Fields
-    today = datetime.now()
-#     today = datetime.datetime.now()
-    # today = today - timedelta(days=2) # Set Temp Today Date (to be deleted)
-    last_saturday = today - timedelta(days=today.weekday()+2) #ToDo Change today to be the last saturday
+#     today = datetime.date.today()
+
+#     if today.weekday() != 6:
+#         last_saturday = today - timedelta(days=today.weekday()+2)
+#     else:
+#         last_saturday = today - timedelta(days=1)
+
+#     last_month_same_date = last_saturday - relativedelta(months=1)
+
+#     first_day_of_month = last_saturday.replace(day=1).strftime('%Y-%m-%d') 
+
+#     datetime_object = datetime.datetime.strptime(first_day_of_month, '%Y-%m-%d')
+#     first_day_of_previous_month = datetime_object - relativedelta(months=1)
+
+#     # Determine Sunday
+#     sunday_current_week = last_saturday - timedelta(days=last_saturday.weekday()+1)
+
+#     sunday_previous_week = sunday_current_week - timedelta(days=7)
+#     ninety_days_ago = last_saturday - datetime.timedelta(days = 90)
+#     rolling_week_start = sunday_current_week - datetime.timedelta(days = 7)
+#     rolling_previous_week_start = rolling_week_start - timedelta(days=7)
+
+#     sunday_current_week = sunday_current_week.strftime('%Y-%m-%d')
+#     sunday_previous_week = sunday_previous_week.strftime('%Y-%m-%d')
+#     first_day_of_previous_month = first_day_of_previous_month.strftime('%Y-%m-%d')
+#     rolling_week_start = rolling_week_start.strftime('%Y-%m-%d')
+#     rolling_previous_week_start = rolling_previous_week_start.strftime('%Y-%m-%d')
+    
+    
+    
+        # Create Date Fields
+    today = datetime.datetime.now()
+
+    if today.weekday() != 6:
+        last_saturday = today - timedelta(days=today.weekday()+2)
+    else:
+        last_saturday = today - timedelta(days=1)
+
     last_month_same_date = last_saturday - relativedelta(months=1)
 
     first_day_of_month = last_saturday.replace(day=1).strftime('%Y-%m-%d') 
 
-    datetime_object = datetime.strptime(first_day_of_month, '%Y-%m-%d')
+    datetime_object = datetime.datetime.strptime(first_day_of_month, '%Y-%m-%d')
     first_day_of_previous_month = datetime_object - relativedelta(months=1)
 
     # Determine Sunday
-    if last_saturday.weekday() == 6:
-        sunday_current_week = last_saturday
-    else: 
-        sunday_current_week = last_saturday - timedelta(days=last_saturday.weekday()+1)
+    sunday_current_week = last_saturday - timedelta(days=last_saturday.weekday()+1)
 
     sunday_previous_week = sunday_current_week - timedelta(days=7)
-    ninety_days_ago = last_saturday - timedelta(days = 90)
-    rolling_week_start = sunday_current_week - timedelta(days = 7)
+    ninety_days_ago = last_saturday - datetime.timedelta(days = 90)
+    rolling_week_start = sunday_current_week - datetime.timedelta(days = 7)
     rolling_previous_week_start = rolling_week_start - timedelta(days=7)
 
     sunday_current_week = sunday_current_week.strftime('%Y-%m-%d')
@@ -778,8 +808,61 @@ def create_pdf(brand_title):
     # brand_title = 'USA' #USA SyFy Oxygen Bravo NBC
     brand = brand_title.lower()
 
+#     # Create Date Fields
+#     today = datetime.datetime.now()
+
+#     if today.weekday() != 6:
+#         last_saturday = today - timedelta(days=today.weekday()+2)
+#         sunday = last_saturday - timedelta(days=last_saturday.weekday() + 1)
+#         week_date = sunday.strftime("%B %d, %Y")
+#     else:
+#         last_saturday = today - timedelta(days=1)
+#         week_date = last_saturday_date.copy()
+        
+#     # today = datetime.now()
+# #     # today = today - timedelta(days=10) # Set Temp Today Date (to be deleted)
+# #     last_saturday = today - timedelta(days=today.weekday()+2) #ToDo Change today to be the last saturday
+#     today_date = today.strftime("%B %d, %Y")
+#     last_saturday_date = last_saturday.strftime("%B %d, %Y")
+
+# #     # Determined Sunday
+# #     if last_saturday.weekday() == 6:
+# #         week_date = last_saturday_date.copy()
+# #     else:
+# #         sunday = last_saturday - timedelta(days=last_saturday.weekday() + 1)
+# #         week_date = sunday.strftime("%B %d, %Y")
+
+#     # Directory
+#     df_directory = pd.read_csv(c.output_dir + brand + '/' + 'final_directory.npy', sep='\t')
+
+#     # Convert to float
+#     df_directory['week'] = df_directory['week'].astype(float)
+#     df_directory['week_over_week'] = df_directory['week_over_week'].astype(float)
+#     df_directory['mtd'] = df_directory['mtd'].astype(float)
+#     df_directory['month_over_month'] = df_directory['month_over_month'].astype(float)
+
+#     # Set Title as index
+#     df_directory.set_index('title', inplace=True)
+
+#     # Create Dict
+#     directory_dict =df_directory.to_dict('index')
+
+#     # Monthly Benchmarks
+#     month_benchmark_dict = {
+#         'Bravo': 13400000,
+#         'USA': 746852,
+#         'NBC': 4114637,
+#         'SyFy': 0,
+#         'Oxygen': 0,
+#     }
+#     month_benchmark = month_benchmark_dict[brand_title]
+#     try:
+#         visits_pacing_to_goal = directory_dict['Visits']['mtd'] / month_benchmark
+#     except:
+#         visits_pacing_to_goal = 0
+
     # Create Date Fields
-    today = datetime.now()
+    today = datetime.datetime.now()
     # today = today - timedelta(days=10) # Set Temp Today Date (to be deleted)
     last_saturday = today - timedelta(days=today.weekday()+2) #ToDo Change today to be the last saturday
     today_date = today.strftime("%B %d, %Y")
@@ -808,14 +891,13 @@ def create_pdf(brand_title):
     directory_dict =df_directory.to_dict('index')
 
     # Monthly Benchmarks
-    month_benchmark_dict = {
-        'Bravo': 13400000,
-        'USA': 746852,
-        'NBC': 4114637,
-        'SyFy': 0,
-        'Oxygen': 0,
-    }
-    month_benchmark = month_benchmark_dict[brand_title]
+    df_benchmarks = pd.read_csv(c.data_dir + 'content_marketing_benchmarks.csv')
+    first_day_of_month = last_saturday.replace(day=1).strftime('%Y-%m-%d')
+    df_benchmarks['date_month'] = df_benchmarks['date_month'].astype('datetime64[ns]')
+    df_benchmarks = df_benchmarks[df_benchmarks['date_month']==first_day_of_month]
+    df_benchmarks = df_benchmarks[df_benchmarks['brand']==brand.lower()]
+    month_benchmark = df_benchmarks.iloc[0]['weekly_visits'] * 30/7
+
     try:
         visits_pacing_to_goal = directory_dict['Visits']['mtd'] / month_benchmark
     except:

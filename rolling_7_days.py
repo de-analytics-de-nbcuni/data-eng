@@ -9,10 +9,10 @@ warnings.filterwarnings("ignore")
 
 # engine = snowflake_engine()
 
-def rolling_7_days(engine):
+def rolling_7_days(engine, column_names, service_account):
     ############################################################################
     # Import Data
-    df_raw = sql.run_rolling_visits_per_post_sql(engine)
+    df_raw = sql.run_rolling_visits_per_post_sql(engine, column_names, service_account)
     
     ############################################################################
     # Run Analysis
