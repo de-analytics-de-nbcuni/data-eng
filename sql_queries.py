@@ -1,4 +1,4 @@
-from util import *
+import util
 
 
 def run_import_sql(engine):

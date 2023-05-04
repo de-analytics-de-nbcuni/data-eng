@@ -1,4 +1,6 @@
-
+#import sys
+#import os
+#sys.path.append(os.path.abspath('/Workspace/Repos/kumar.senniappan@nbcuni.com/data-eng'))
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine
 import numpy as np
@@ -6,7 +8,7 @@ import scipy.stats as stat
 from sqlalchemy.dialects import registry
 import pandas as pd
 import CONSTAINTS as c
-from NBCUDomoConnector import NBCUDomoConnector
+# from NBCUDomoConnector import NBCUDomoConnector
 import multiprocessing as mp
 import functools
 import logging
@@ -14,6 +16,7 @@ import struct
 import sys
 import time
 import pytz
+import pandas as pd
 
 
 

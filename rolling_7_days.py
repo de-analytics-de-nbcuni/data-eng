@@ -1,4 +1,11 @@
-from util import *
+import sys
+import os
+# In the command below, update with the repo that you want to pull into the cluster
+sys.path.append(os.path.abspath('/Workspace/Repos/kumar.senniappan@nbcuni.com/data-eng'))
+
+import pandas as pd
+#from util.py import *
+import util
 import sql_queries as sql
 import CONSTAINTS as c
 from datetime import datetime, timedelta
